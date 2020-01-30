@@ -11,11 +11,11 @@ import pdb
 import os
 # os.environ['THEANO_FLAGS'] = 'mode=FAST_RUN,device=cpu,floatX=float32'
 from keras.models import Model
-from keras.layers import Input, merge, Convolution2D, MaxPooling2D, UpSampling2D, Reshape, Activation, Permute
+from keras.layers import Input, concatenate, Convolution2D, MaxPooling2D, UpSampling2D, Reshape, Activation, Permute
 from keras.layers.normalization import BatchNormalization
 from keras.optimizers import Adam, RMSprop
 from keras.callbacks import ModelCheckpoint, Callback
-import keras.backend as K
+import keras.backend.common as K
 K.set_image_dim_ordering("th")
 
 CROP_SIZE = 160
@@ -94,7 +94,7 @@ def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, u
             conv5 = BatchNormalization()(conv5)
         conv5 = Activation("relu")(conv5)
 
-        up6 = merge([UpSampling2D(size=(2, 2))(conv5), conv4], mode='concat', concat_axis=1)
+        up6 = concatenate([UpSampling2D(size=(2, 2))(conv5), conv4], axis=-1)
         conv6 = Convolution2D(conv_channel * 8, 3, 3, border_mode='same', init=init)(up6)
         if bn:
             conv6 = BatchNormalization()(conv6)
@@ -104,9 +104,9 @@ def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, u
             conv6 = BatchNormalization()(conv6)
         conv6 = Activation("relu")(conv6)
 
-        up7 = merge([UpSampling2D(size=(2, 2))(conv6), conv3], mode='concat', concat_axis=1)
+        up7 = concatenate([UpSampling2D(size=(2, 2))(conv6), conv3], axis=-1)
     else:
-        up7 = merge([UpSampling2D(size=(2, 2))(conv4), conv3], mode='concat', concat_axis=1)
+        up7 = concatenate([UpSampling2D(size=(2, 2))(conv4), conv3], axis=-1)
     conv7 = Convolution2D(conv_channel*4, 3, 3, border_mode='same', init=init)(up7)
     if bn:
         conv7 = BatchNormalization()(conv7)
@@ -116,7 +116,7 @@ def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, u
         conv7 = BatchNormalization()(conv7)
     conv7 = Activation("relu")(conv7)
 
-    up8 = merge([UpSampling2D(size=(2, 2))(conv7), conv2], mode='concat', concat_axis=1)
+    up8 = concatenate([UpSampling2D(size=(2, 2))(conv7), conv2], axis=-1)
     conv8 = Convolution2D(conv_channel*2, 3, 3, border_mode='same', init=init)(up8)
     if bn:
         conv8 = BatchNormalization()(conv8)
@@ -126,7 +126,7 @@ def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, u
         conv8 = BatchNormalization()(conv8)
     conv8 = Activation("relu")(conv8)
 
-    up9 = merge([UpSampling2D(size=(2, 2))(conv8), conv1], mode='concat', concat_axis=1)
+    up9 = concatenate([UpSampling2D(size=(2, 2))(conv8), conv1], axis=-1)
     conv9 = Convolution2D(conv_channel, 3, 3, border_mode='same', init=init)(up9)
     if bn:
         conv9 = BatchNormalization()(conv9)
