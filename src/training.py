@@ -107,7 +107,7 @@ def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, u
             conv6 = BatchNormalization()(conv6)
         conv6 = Activation("relu")(conv6)
 
-        up7 = merge([UpSampling2D(size=(2, 2))(conv6), conv3], mode='concat', concat_axis=1)
+        up7 = merge([UpSampling2D(size=(2, 2))(conv6), conv3], mode='concat', concat_axis=3)
     else:
         up7 = merge([UpSampling2D(size=(2, 2))(conv4), conv3], mode='concat', concat_axis=1)
     conv7 = Convolution2D(conv_channel*4, 3, 3, border_mode='same', init=init)(up7)
