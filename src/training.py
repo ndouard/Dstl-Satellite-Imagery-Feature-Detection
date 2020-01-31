@@ -11,11 +11,11 @@ import pdb
 import os
 # os.environ['THEANO_FLAGS'] = 'mode=FAST_RUN,device=cpu,floatX=float32'
 from keras.models import Model
-from keras.layers import Input, concatenate, Convolution2D, MaxPooling2D, UpSampling2D, Reshape, Activation, Permute
+from keras.layers import Input, merge, Convolution2D, MaxPooling2D, UpSampling2D, Reshape, Activation, Permute
 from keras.layers.normalization import BatchNormalization
 from keras.optimizers import Adam, RMSprop
 from keras.callbacks import ModelCheckpoint, Callback
-import keras.backend.common as K
+import keras.backend as K
 K.set_image_dim_ordering("th")
 
 CROP_SIZE = 160
@@ -40,9 +40,6 @@ def stretch_8bit(bands, lower_percent=2, higher_percent=98):
 
 def get_unet(lr=1e-4, deep=True, dims=20, conv_channel=32, N_Cls=10, bn=False, use_sample_weights=True,
              init="glorot_uniform", use_jaccard_loss=False):
-    
-    def merge(inputs, mode, concat_axis=-1):
-        return concatenate(inputs, concat_axis)
     """
     Creates the U-Net in Keras
     """
@@ -467,4 +464,3 @@ if __name__ == "__main__":
         visual_name="conv32_nobn_nodo_bs16_decay.97", lr_start=1e-5, LR_decay=0.97,
         input_name="1600_denom1_20bands", batch_size=16, size=1600, use_sample_weights=False,
         mins=mins, maxs=maxs, init="glorot_uniform", use_jaccard_loss=False)
-
