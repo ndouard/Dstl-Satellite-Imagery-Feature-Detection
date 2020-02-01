@@ -14,8 +14,8 @@ import pandas as pd
 
 
 CROP_SIZE = 160
-GS = pd.read_csv('data/grid_sizes.csv', names=['ImageId', 'Xmax', 'Ymin'], skiprows=1)
-SB = pd.read_csv('data/sample_submission.csv')
+GS = pd.read_csv('../data/grid_sizes.csv', names=['ImageId', 'Xmax', 'Ymin'], skiprows=1)
+SB = pd.read_csv('../data/sample_submission.csv')
 class_list = ["Buildings", "Misc. Manmade structures", "Road", "Track", "Trees", "Crops", "Waterway",
               "Standing Water", "Vehicle Large", "Vehicle Small"]
 
@@ -164,7 +164,7 @@ def make_submit(name, max_score, trs=None):
     SB.to_csv('../subm/{}.csv.gz'.format(name), compression="gzip", index=False)
 
 if __name__ == "__main__":
-    logger = init_logging("../logs/{}.log".format(datetime.now().strftme("%d-%m-%y")),
+    logger = init_logging("../logs/{}.log".format(datetime.now().strftime("%d-%m-%y")),
                           "START: Submitting")
     # precomputed minimum and maximum values for all spectral bands
     mins = [55.0, 167.0, 99.0, 174.0, 182.0, 144.0, 158.0, 132.0, 61.0, 138.0, 160.0, 113.0, 672.0, 490.0, 435.0,
