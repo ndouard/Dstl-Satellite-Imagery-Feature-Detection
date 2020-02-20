@@ -175,7 +175,7 @@ if __name__ == "__main__":
     scores = [float(j[-6:]) for j in os.listdir("../weights")]
     max_score = "{:.4f}".format(max(scores))
     visual_name = "conv32_nobn_nodo_bs16_decay.97"
-    model = get_unet(dims=20, conv_channel=32, bn=False, dropout=False, big=True, N_Cls=10)
+    model = get_unet(dims=20, conv_channel=32, bn=False, N_Cls=10)
     model.load_weights('../weights/unet_{}_{}'.format(visual_name, max_score))
     trs = np.load("../data/thresholds_unet_{}_{}.npy".format(visual_name, max_score))
     means = np.load("../data/means_{}.npy".format(visual_name))
